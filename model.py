@@ -36,7 +36,7 @@ class ResBlock(nn.Module):
         """
         建立可学习参数
         :param in_channels: 输入通道数
-        :param res_num: 重复次数
+        :param res_num: 残差结构的个数
         """
         super().__init__()
 

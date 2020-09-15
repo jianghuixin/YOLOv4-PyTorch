@@ -24,8 +24,59 @@
 
 ### 网络模型
 
-- shortcut: 将两个相同维度的特征图相加, 相加后维度不变, 其后可接激活函数, <font color="brown">如果使用 "linear" 激活函数, 则表示直接输出</font>
-- route: 将相同尺寸的特征图叠加
+#### 卷积层
+
+##### ConvBNMish
+
+YOLOv4 的 Backbone 中全部使用这种卷积层, 其后接 BatchNorm 且不带偏置
+
+```python
+class ConvBNMish(nn.Sequential):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1):
+        padding = (kernel_size - 1) // 2
+
+        super().__init__(
+            nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, bias=False),
+            nn.BatchNorm2d(out_channels),
+            Mish()
+        )
+```
+
+##### ConvBNLeakyReLU
+
+在 Backbone 和 YOLO Layer 前一层之间使用这种卷积层, 跟上边的卷积层基本相同, 只是更换了激活函数
+
+```python
+class ConvBNLeakyReLU(nn.Sequential):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1):
+        padding = (kernel_size - 1) // 2
+
+        super().__init__(
+            nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.LeakyReLU(0.1, inplace=True)
+        )
+```
+
+##### Conv
+
+ YOLO Layer 前一层使用普通的卷积层, 该卷积带有偏置
+
+<br>
+
+### route
+
+如果 route 个数为 1, 表示引出支路
+
+如果 route 个数大于 1(个数为 2 或 4), 表示将相同尺寸的特征图叠加, BxCxHxW中 C 的个数增加其余维度不变
+
+<br>
+
+### shortcut
+
+将两个相同维度的特征图相加, 前后维度不变, 其后可接激活函数, <font color="brown">如果使用 "linear" 激活函数, 则表示直接输出</font>
+
+<br>
 
 #### 向上采样
 

@@ -1,5 +1,5 @@
 numpy==1.19.0
 opencv-python==4.2.0.34
 Pillow==7.1.2
-torch==1.5.1+cpu
-torchvision==0.6.1+cpu
+torch==1.5.1
+torchvision==0.6.1
