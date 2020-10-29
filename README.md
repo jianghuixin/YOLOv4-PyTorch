@@ -11,13 +11,14 @@
 .
 ├── image
 │   └── demo.png      默认使用该图像推理
+├── kmeans.py         根据数据集计算 ANCHOR
 ├── main.py           解析命令行和推理
 ├── model.py          YOLOv4 的网络模型
 ├── README.md
 ├── requirements.txt
 └── utils.py          过滤和绘制目标框
 
-1 directory, 6 files
+1 directory, 7 files
 ```
 
 <br>
@@ -100,7 +101,7 @@ ex = img.view(2,1,2,1).expand(-1,2,-1,2).contiguous().view(4,4)
 
 使用 PyTorch 定义网络模型时, 在 `__init__` 函数中所有卷积层出现的顺序与 `yolov4.cfg` 中的 "convolutional" 的顺序一致, 所以仅需依次加载 `yolov4.weights` 
 
-
+<br>
 
 YOLOv4 中的卷积层有两种, 一种是后接 BatchNorm 但没有 Bias 的卷积层; 另一种是在末端 YOLO Layer 的卷积层, 这一种带有偏置 Bias 但后面没有 BatchNorm
 
@@ -121,6 +122,16 @@ $ python3 main.py  --weight ~/Datasets/YOLOv4.weights
 ![detect.png](https://i.loli.net/2020/09/11/uzIJ7iso3GaY8UX.png)
 
 <br>
+
+### 训练模型
+
+#### 计算 ANCHOR
+
+对于自定义数据集有必要重新计算 ANCHOR, 以提高训练效果
+
+<br>
+
+以[VOC2007](https://pjreddie.com/projects/pascal-voc-dataset-mirror/)数据集为例, `kmeans.py`包含了计算过程
 
 ### 进度
 
